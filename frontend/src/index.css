@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-feature-settings: "cv11", "ss01";
+  }
+  body {
+    background:
+      radial-gradient(1200px 480px at 8% -10%, rgba(38, 50, 107, 0.06), transparent 60%),
+      #F7F6F1;
+  }
+  ::selection {
+    background: #D9DEEF;
+  }
+  :focus-visible {
+    outline: 2px solid #374688;
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-surface border border-line rounded-card shadow-card;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-control px-4 py-2.5 text-sm font-semibold transition-colors disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-primary {
+    @apply btn bg-navy-600 text-white hover:bg-navy-700;
+  }
+  .btn-secondary {
+    @apply btn bg-white text-ink border border-line hover:bg-canvas;
+  }
+  .btn-ghost {
+    @apply btn text-ink-muted hover:bg-navy-50 hover:text-navy-700;
+  }
+  .btn-danger {
+    @apply btn bg-danger text-white hover:opacity-90;
+  }
+  .input {
+    @apply w-full rounded-control border border-line bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-faint focus:border-navy-400 focus:ring-2 focus:ring-navy-100 outline-none transition;
+  }
+  .label {
+    @apply block text-xs font-semibold uppercase tracking-wide text-ink-muted mb-1.5;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.14em] text-navy-500;
+  }
+}

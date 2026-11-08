@@ -1,0 +1,60 @@
+version: "3.9"
+
+# Optional convenience stack for local development against a real
+# PostgreSQL instance instead of the zero-config SQLite default. Not
+# required to run Examora - see README.md for the plain `uvicorn` / `vite`
+# workflow, which is faster for day-to-day development.
+#
+# Usage:
+#   docker compose up --build
+#   docker compose exec backend python -m app.seed   # load demo data
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: examora
+      POSTGRES_PASSWORD: examora
+      POSTGRES_DB: examora
+    ports:
+      - "5432:5432"
+    volumes:
+      - examora_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U examora"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://examora:examora@db:5432/examora
+      JWT_SECRET: dev-secret-change-me
+      CORS_ORIGINS: http://localhost:5173,http://localhost:4173,http://localhost:3000
+      PROCTORING_MODE: live
+      AI_PROVIDER: rules
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - examora_uploads:/app/uploads
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:8000
+    ports:
+      - "5173:4173"
+
+volumes:
+  examora_pgdata:
+  examora_uploads:
